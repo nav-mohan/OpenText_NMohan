@@ -28,4 +28,10 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
+    bool validHead = xmlparser.SetHead("CATALOG");
+    if(!validHead)
+    {
+        fprintf(stderr, "Node <CATALOG> not found in %s\n",input_xml_filename);
+        exit(1);
+    }
 }
