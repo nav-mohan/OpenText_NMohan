@@ -1,0 +1,5 @@
+build/
+scratch/
+archive/instructions.docx
+.vscode
+.DS_Store
