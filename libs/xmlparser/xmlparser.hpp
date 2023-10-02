@@ -4,6 +4,7 @@
 #include <iostream>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+#include <functional>
 
 class XmlParser
 {
@@ -17,6 +18,8 @@ public:
     ~XmlParser(){};
     void LoadXml(const char * input_xml_filename);
     bool SetHead(const char *head) noexcept;
+    std::function<void(boost::property_tree::ptree::const_iterator it)>IteratorCallback;
+    void GetAll();
 };
 
 #endif // XMLPARSER_HPP

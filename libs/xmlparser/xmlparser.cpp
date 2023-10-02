@@ -15,3 +15,13 @@ bool XmlParser::SetHead(const char *head) noexcept
     end_ = treehead->end();
     return true;
 }
+
+void XmlParser::GetAll()
+{
+    while(it_ != end_)
+    {
+        IteratorCallback(it_);
+        it_++;
+    }
+    return;
+}
