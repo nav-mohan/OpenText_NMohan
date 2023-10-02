@@ -1,10 +1,11 @@
 #include <iostream>
 #include "helpers.hpp"
+#include "xmlparser.hpp"
 
 // usage: main input.xml output.html
 int main(int argc, char *argv[])
 {
-    if(argc < 3) 
+    if(argc < 3)
     {
         Helpers::PrintUsage(argv[0]);
         exit(1);
@@ -15,5 +16,16 @@ int main(int argc, char *argv[])
     bool file_is_valid = Helpers::FileValidate(input_xml_filename);
     if(!file_is_valid) exit(1);
 
+    XmlParser xmlparser;
+    try
+    {
+        xmlparser.LoadXml(input_xml_filename);
+    }
+    catch(const std::exception& e)
+    {
+        fprintf(stderr, "Failed to load XML file %s\n",input_xml_filename);
+        fprintf(stderr, "%s",e.what());
+        exit(1);
+    }
 
 }
