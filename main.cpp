@@ -35,6 +35,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Node <CATALOG> not found in %s\n",input_xml_filename);
         exit(1);
     }
+
     std::string title, artist, company, country, price, year;
     std::optional<std::string> opt_title, opt_artist, opt_company, opt_country, opt_price, opt_year;
     auto iteratorCallback = [&](boost::property_tree::ptree::const_iterator it){
@@ -71,5 +72,8 @@ int main(int argc, char *argv[])
         }
     };
     xmlparser.IteratorCallback = std::move(iteratorCallback);
-    xmlparser.GetAll();
+
+    // xmlparser.GetAll();
+    while(!xmlparser.IsEnd())
+        xmlparser.GetNext();
 }

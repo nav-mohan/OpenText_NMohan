@@ -25,3 +25,15 @@ void XmlParser::GetAll()
     }
     return;
 }
+
+void XmlParser::GetNext()
+{
+    if(it_==end_) return;
+    IteratorCallback(it_);
+    it_++;
+}
+
+bool XmlParser::IsEnd() const
+{
+    return (it_ == end_);
+}

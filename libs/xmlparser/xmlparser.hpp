@@ -20,6 +20,9 @@ public:
     bool SetHead(const char *head) noexcept;
     std::function<void(boost::property_tree::ptree::const_iterator it)>IteratorCallback;
     void GetAll();
+    bool IsEnd() const;
+    void GetNext();
+
 };
 
 #endif // XMLPARSER_HPP
