@@ -64,9 +64,9 @@ int main(int argc, char *argv[])
     // Build the HTML table
 
     HtmlBuilder tablebuilder;
-    tablebuilder.SetRoot("html");// add a root <table>. it is at <html>
+    tablebuilder.SetRoot("html");// add a root <table>. iterator is at <html>
 
-    tablebuilder.PushForward("table");// add a root <table>/ it is at <table>
+    tablebuilder.PushForward("table");// iterator is at <table>
 
     // make column headers
     tablebuilder.PushForward("tr"); // iterator is at <tr>
