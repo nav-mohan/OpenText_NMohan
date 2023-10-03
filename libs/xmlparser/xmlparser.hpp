@@ -9,8 +9,8 @@ class XmlParser
 {
 private:
     boost::property_tree::ptree tree_;
-    boost::property_tree::ptree::iterator it_;
-    boost::property_tree::ptree::iterator end_;
+    boost::property_tree::ptree::const_iterator it_;
+    boost::property_tree::ptree::const_iterator end_;
 
 public:
     XmlParser(){};
