@@ -1,7 +1,6 @@
 #if !defined(XMLPARSER_HPP)
 #define XMLPARSER_HPP
 
-#include <iostream>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <functional>
@@ -17,11 +16,11 @@ public:
     XmlParser(){};
     ~XmlParser(){};
     void LoadXml(const char * input_xml_filename);
-    bool SetHead(const char *head) noexcept;
-    std::function<void(boost::property_tree::ptree::const_iterator it)>IteratorCallback;
+    bool GetRoot(const char *head) noexcept;
+    std::function<bool(boost::property_tree::ptree::const_iterator it)>IteratorCallback;
     void GetAll();
     bool IsEnd() const;
-    void GetNext();
+    bool GetNext();
 
 };
 

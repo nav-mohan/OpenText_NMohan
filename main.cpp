@@ -1,7 +1,11 @@
 #include <iostream>
+#include <optional>
+#include <vector>
+#include <string>
+
 #include "helpers.hpp"
 #include "xmlparser.hpp"
-#include <optional>
+
 
 // usage: main input.xml output.html
 int main(int argc, char *argv[])
@@ -16,11 +20,12 @@ int main(int argc, char *argv[])
     
     bool file_is_valid = Helpers::FileValidate(input_xml_filename);
     if(!file_is_valid) exit(1);
-
-    XmlParser xmlparser;
+    
+    // Load the xml file
+    XmlParser catalogparser;
     try
     {
-        xmlparser.LoadXml(input_xml_filename);
+        catalogparser.LoadXml(input_xml_filename);
     }
     catch(const std::exception& e)
     {
@@ -29,51 +34,28 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    bool validHead = xmlparser.SetHead("CATALOG");
+    bool validHead = catalogparser.GetRoot("CATALOG");
     if(!validHead)
     {
         fprintf(stderr, "Node <CATALOG> not found in %s\n",input_xml_filename);
         exit(1);
     }
+    
+    std::vector<std::string> column_headers{"TITLE","ARTIST","COMPANY","COUNTRY","PRICE","YEAR"};
+    std::vector<std::string> row_values(6);
 
-    std::string title, artist, company, country, price, year;
-    std::optional<std::string> opt_title, opt_artist, opt_company, opt_country, opt_price, opt_year;
-    auto iteratorCallback = [&](boost::property_tree::ptree::const_iterator it){
-        if((*it).first == "CD")
+    auto catalogParserCallback = [&](boost::property_tree::ptree::const_iterator it) -> bool
+    {
+        if(it->first != "CD") return false; // NOT A <CD>
+
+        for(int i = 0; i < column_headers.size(); i++)
         {
-            auto opt_title = (*it).second.get_optional<std::string>("TITLE");
-            auto opt_artist = (*it).second.get_optional<std::string>("ARTIST");
-            auto opt_company = (*it).second.get_optional<std::string>("COMPANY");
-            auto opt_country = (*it).second.get_optional<std::string>("COUNTRY");
-            auto opt_price = (*it).second.get_optional<std::string>("PRICE");
-            auto opt_year = (*it).second.get_optional<std::string>("YEAR");
-            if( 
-                opt_title.is_initialized() && opt_artist.is_initialized() && 
-                opt_company.is_initialized() && opt_country.is_initialized() && 
-                opt_price.is_initialized() && opt_year.is_initialized()
-            )
-            {
-                title = opt_title.get();
-                artist = opt_artist.get();
-                company = opt_company.get();
-                country = opt_country.get();
-                price = opt_price.get();
-                year = opt_year.get();
-                fprintf(stdout, "%s %s %s %s %s %s\n",title.c_str(),artist.c_str(),company.c_str(),country.c_str(),price.c_str(),year.c_str());
-            }
-            else 
-            {
-                std::cerr << "***** MISSING COLUMN ***** " << std::endl;
-            }
+            auto opt_val = it->second.get_optional<std::string>(column_headers[i]);
+            if(!opt_val.is_initialized()) return false; // missing column
+            row_values[i] = std::move(opt_val.get());
         }
-        else 
-        {
-            std::cerr << "***** NOT A CD *****" << std::endl;
-        }
+        return true;
     };
-    xmlparser.IteratorCallback = std::move(iteratorCallback);
+    catalogparser.IteratorCallback = std::move(catalogParserCallback);
 
-    // xmlparser.GetAll();
-    while(!xmlparser.IsEnd())
-        xmlparser.GetNext();
 }
