@@ -26,6 +26,12 @@
 * `HtmlBuilder::PushLeaf` pushes a leaf node at the `iterator`'s position.
 * A `std::vector` of length 6 is used by the client code as a temporary storge of values that were parsed by `XmlParser`. This allows the client code to perform error checks and drop any invalid rows before the `HtmlBuilder` appends nodes. 
 
+#### Tests
+* The code was tested on 4 `XML` files which are included in the `archive/` folder
+* `cd_catalog.xml` is a valid `XML` and the code parses it entirely.
+* `error1.xml` is a malformed `XML`. The client code exits early in this case.
+* `error2.xml` has a valid `XML` schema but one of it's rows is not indexed by a `<CD>` tag. This row is dropped silently by the client code.
+* `error3.xml` has a valid `XML` schema but one of the rows has a different column `<RELEASE_YEAR>` instead of `<YEAR>`. This row is dropped silently by the client code. 
 
 #### Alternative ideas
 * When building the output `HTML` table, every node in the tree is a `boost::property_tree::ptree`. Extending upon this base node class to make a doubly-linked node is an alternative to using a `std::stack<ptree::iterator>` but for trees that are not deeply nested, a tree full of double-linked nodes would consume more memory than using a `std::stack`. The drawback to my approach of using a `std::stack` is that the client code must remember to call `HtmlBuilder::GoBack` correctly. 
