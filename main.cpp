@@ -5,6 +5,7 @@
 
 #include "helpers.hpp"
 #include "xmlparser.hpp"
+#include "htmlbuilder.hpp"
 
 
 // usage: main input.xml output.html
@@ -58,4 +59,29 @@ int main(int argc, char *argv[])
     };
     catalogparser.IteratorCallback = std::move(catalogParserCallback);
 
+
+
+    // Build the HTML table
+
+    HtmlBuilder tablebuilder;
+    tablebuilder.SetRoot("html");// add a root <table>. it is at <html>
+
+    tablebuilder.PushForward("table");// add a root <table>/ it is at <table>
+
+    // make column headers
+    tablebuilder.PushForward("tr"); // iterator is at <tr>
+    for(const auto& ch : column_headers)
+        tablebuilder.PushLeaf("th",ch.c_str());
+    tablebuilder.GoBack(); // iterator is at <table>
+
+    while(!catalogparser.IsEnd())
+    {
+        bool success = catalogparser.GetNext();
+        if(!success) continue;
+        tablebuilder.PushForward("tr"); // iterator is at <tr>
+        for(const auto& rv : row_values)
+            tablebuilder.PushLeaf("td",rv.c_str());
+        tablebuilder.GoBack();
+    }
+    tablebuilder.WriteHtml(output_html_filename);
 }
